@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GPG Online</title>
+<style>html{overflow-y:scroll;}body{background-color:#fafafa;color:#333;margin:0 auto;padding:1ex;max-width:80ex;font-family:sans-serif;line-height:1.6;}img{display:block;margin:0 auto;max-width:100%;height:auto;}.code-block{background-color:#f5f5f5;border:1px solid #d0d0d0;border-radius:4px;margin:1em 0;overflow:hidden;}.code-block pre{margin:0;padding:1em;overflow-x:auto;}.code-block code,pre{background-color:transparent;border:none;display:block;font-family:monospace;font-size:0.9em;line-height:1.4;overflow-x:auto;padding:0;white-space:pre;}p code,li code,td code,blockquote code{display:inline;padding:2px 4px;border:1px solid #d0d0d0;background-color:#e8e8e8;border-radius:3px;}h1,h2,h3,h4,h5,h6,h7{line-height:1.2;margin-top:1.5em;margin-bottom:0.5em;}.heading-with-anchor{position:relative;}.heading-anchor{position:absolute;left:-1.5em;top:50%;transform:translateY(-50%);text-decoration:none;opacity:0;padding-right:0.5em;transition:opacity 0.2s ease;display:inline-flex;align-items:center;}.heading-anchor .octicon{fill:#ccc;display:block;}.heading-with-anchor:hover .heading-anchor{opacity:1;}.heading-anchor:hover .octicon{fill:#0066cc;}table{border-collapse:collapse;width:100%;margin:1em 0;}table td,table th{border:1px solid #ccc;padding:8px 12px;text-align:left;}table tr:nth-child(even){background-color:#f9f9f9;}blockquote{border-left:4px solid #d0d0d0;margin:1em 0;padding-left:1em;color:#555;}hr{border:none;border-top:2px solid #ccc;margin:2em 0;}ul.task-list{list-style:none;padding-left:0;}ul.task-list li.task-list-item{padding-left:1.5em;}ul.task-list input[type="checkbox"]{margin-left:-1.5em;margin-right:0.5em;}mark{background-color:#ffff00;padding:2px 0;}del{text-decoration:line-through;opacity:0.7;}sub,sup{font-size:0.75em;line-height:0;position:relative;vertical-align:baseline;}sup{top:-0.5em;}sub{bottom:-0.25em;}.footnotes{margin-top:2em;padding-top:1em;border-top:1px solid #ccc;font-size:0.9em;}.footnotes ol{padding-left:1.5em;}dl{margin:1em 0;}dt{font-weight:bold;margin-top:0.5em;}dd{margin-left:2em;margin-bottom:0.5em;}a{color:#0066cc;text-decoration:none;}a:hover{text-decoration:underline;color:#0052a3;}a:visited{color:#6b46c1;}ul ul,ol ol,ul ol,ol ul{margin:0.5em 0;}textarea,input,button{font-family:inherit;font-size:1em;border:1px solid #d0d0d0;border-radius:4px;padding:0.5em;}textarea,input[type="text"],input[type="password"],input[type="email"]{width:100%;background-color:#fff;color:#333;box-sizing:border-box;margin:0.5em 0;}textarea{resize:vertical;min-height:4em;}button{background-color:#0066cc;color:#fff;border:none;cursor:pointer;padding:0.6em 1.2em;margin:0.5em 0.5em 0.5em 0;transition:background-color 0.2s ease;}button:hover{background-color:#0052a3;}button:active{background-color:#003d7a;}details{margin:1em 0;}summary{cursor:pointer;font-weight:bold;padding:0.5em;background-color:#f5f5f5;border:1px solid #d0d0d0;border-radius:4px;user-select:none;}summary:hover{background-color:#e8e8e8;}pre{background-color:#f5f5f5;border:1px solid #d0d0d0;border-radius:4px;padding:1em;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;}@media print{body{max-width:none;}}@media (prefers-color-scheme:dark){body{color:#e0e0e0;background-color:#1a1a1a;}.code-block{background-color:#0d0d0d;border-color:#333;}.code-block pre{color:#e0e0e0;}p code,li code,td code,blockquote code{background-color:#0d0d0d;border-color:#333;color:#e0e0e0;}table td,table th{border-color:#444;}table tr:nth-child(even){background-color:#111;}blockquote{border-left-color:#444;color:#aaa;}hr{border-top-color:#444;}mark{background-color:#666600;color:#fff;}a:link{color:#cdf;}a:hover,a:visited:hover{color:#def;}a:visited{color:#dcf;}.footnotes{border-top-color:#444;}.heading-anchor .octicon{fill:#555;}.heading-anchor:hover .octicon{fill:#cdf;}textarea,input[type="text"],input[type="password"],input[type="email"]{background-color:#0d0d0d;color:#e0e0e0;border-color:#444;}button{background-color:#0066cc;}button:hover{background-color:#3388dd;}button:active{background-color:#0052a3;}summary{background-color:#0d0d0d;border-color:#444;}summary:hover{background-color:#1a1a1a;}pre{background-color:#0d0d0d;border-color:#444;}}</style>
+<script src="https://unpkg.com/openpgp@5.11.2/dist/openpgp.min.js"></script>
+</head>
+<body>
+<h1>GPG Online</h1>
+
+<h2>Encrypt Message</h2>
+<div id="encrypt-section">
+  <h3>Message to encrypt</h3>
+  <textarea id="plaintext" rows="5" placeholder="Enter your message here..."></textarea>
+
+  <div id="public-keys">
+    <div class="public-key">
+      <h3>Recipient's Public Key</h3>
+      <p class="hint">Only the person who has the corresponding private key will be able to decrypt this message.</p>
+      <textarea rows="5" placeholder="Paste recipient's PGP public key here...">
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+=Xiin
+-----END PGP PUBLIC KEY BLOCK-----
+      </textarea>
+    </div>
+  </div>
+  <button id="add-public-key">Add Another Recipient</button>
+
+  <details>
+    <summary>Sign message (optional)</summary>
+    <h3>Your Private Key</h3>
+    <textarea id="signing-key" rows="5" placeholder="Paste your PGP private key here..."></textarea>
+    <h3>Passphrase (if required)</h3>
+    <input type="password" id="signing-passphrase" placeholder="Enter passphrase..." />
+  </details>
+
+  <button id="encrypt">Encrypt</button>
+  <pre id="encrypted-output"></pre>
+</div>
+
+<hr style="margin: 3em 0;">
+
+<h2>Decrypt Message</h2>
+<div id="decrypt-section">
+  <h3>Encrypted Message</h3>
+  <textarea id="ciphertext" rows="5" placeholder="Paste encrypted PGP message here..."></textarea>
+
+  <h3>Your Private Key</h3>
+  <textarea id="private-key" rows="5" placeholder="Paste your PGP private key here..."></textarea>
+
+  <h3>Passphrase (if required)</h3>
+  <input type="password" id="passphrase" placeholder="Enter passphrase..." />
+
+  <button id="decrypt">Decrypt</button>
+  <pre id="decrypted-output"></pre>
+</div>
+
+<script>
+const query = query => document.querySelector(query);
+const queryAll = query => Array.prototype.slice.apply(document.querySelectorAll(query));
+const publicKeyTemplate = query('.public-key').outerHTML;
+
+query('#add-public-key').addEventListener('click', () => {
+  const element = document.createElement('div');
+  element.innerHTML = publicKeyTemplate;
+  element.querySelector('textarea').value = '';
+  query('#public-keys').appendChild(element.firstElementChild);
+});
+
+// Encrypt functionality
+query('#encrypt').addEventListener('click', async () => {
+  try {
+    const plaintext = query('#plaintext').value;
+    if (!plaintext) {
+      throw new Error('Please enter a message to encrypt');
+    }
+
+    const publicKeys = await Promise.all(
+      queryAll('.public-key textarea')
+        .filter(el => el.value.trim())
+        .map(el => openpgp.readKey({ armoredKey: el.value }))
+    );
+
+    if (publicKeys.length === 0) {
+      throw new Error('Please enter at least one public key');
+    }
+
+    const options = {
+      message: await openpgp.createMessage({ text: plaintext }),
+      encryptionKeys: publicKeys,
+    };
+
+    // Optional signing
+    const signingKeyArmored = query('#signing-key').value;
+    if (signingKeyArmored.trim()) {
+      const passphrase = query('#signing-passphrase').value;
+      let signingKey = await openpgp.readPrivateKey({ armoredKey: signingKeyArmored });
+
+      if (!signingKey.isDecrypted() && passphrase) {
+        signingKey = await openpgp.decryptKey({
+          privateKey: signingKey,
+          passphrase: passphrase,
+        });
+      }
+
+      options.signingKeys = signingKey;
+    }
+
+    const encrypted = await openpgp.encrypt(options);
+    query('#encrypted-output').textContent = encrypted;
+  } catch (err) {
+    alert('Encryption error: ' + err.message);
+  }
+});
+
+// Decrypt functionality
+query('#decrypt').addEventListener('click', async () => {
+  try {
+    const ciphertext = query('#ciphertext').value;
+    if (!ciphertext) {
+      throw new Error('Please enter an encrypted message');
+    }
+
+    const privateKeyArmored = query('#private-key').value;
+    if (!privateKeyArmored) {
+      throw new Error('Please enter your private key');
+    }
+
+    const passphrase = query('#passphrase').value;
+    let privateKey = await openpgp.readPrivateKey({ armoredKey: privateKeyArmored });
+
+    if (!privateKey.isDecrypted() && passphrase) {
+      privateKey = await openpgp.decryptKey({
+        privateKey: privateKey,
+        passphrase: passphrase,
+      });
+    }
+
+    const message = await openpgp.readMessage({ armoredMessage: ciphertext });
+    const { data: decrypted } = await openpgp.decrypt({
+      message: message,
+      decryptionKeys: privateKey,
+    });
+
+    query('#decrypted-output').textContent = decrypted;
+  } catch (err) {
+    alert('Decryption error: ' + err.message);
+  }
+});
+</script>
+
+<hr/>
+
+<p>
+  This page uses industry vetted open source <a href="https://github.com/openpgpjs/openpgpjs">OpenPGP.js</a> and does not submit anything to the server. Everything happens in your browser and is completely lost when you close this page.
+</p>
+
+</body>
+</html>

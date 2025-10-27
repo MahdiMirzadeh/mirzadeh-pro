@@ -6,7 +6,7 @@ icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNC
 
 # Contact me
 
-[me@mahdi.pw](mailto:me@mahdi.pw)
+[mahdi@mirzadeh.pro](mailto:mahdi@mirzadeh.pro)
 
 I prefer email over messaging protocols, here are some notes:
 
@@ -16,13 +16,13 @@ I prefer email over messaging protocols, here are some notes:
 
 ## Email Encryption
 
-Encrypt your messages while you're talking to me. Download [mahdi.gpg](https://mahdi.pw/mahdi.gpg).
+Encrypt your messages while you're talking to me. Download [mahdi.gpg](https://mirzadeh.pro/mahdi.gpg).
 
 Fingerprint: `6619 D598 7FF3 01B9 8604  3FD9 867D 890E AC1C 4063`
 
 ### Guide to Email Encryption
 
-Use [this guide](https://emailselfdefense.fsf.org/en/) to learn more about encryption, or use [my online gpg encyption tool](https://mahdi.pw/gpg.html) then send your emails that way.
+Use [this guide](https://emailselfdefense.fsf.org/en/) to learn more about encryption, or use [my online gpg encyption tool](https://mirzadeh.pro/gpg.html) then send your emails that way.
 
 ### Update my key
 
@@ -31,7 +31,7 @@ Please update the key before using it *(it doesn't apply on my online tool)*, I 
 UNIX-like users can do this trick to update my key:
 
 ```
-curl -Ls "https://mahdi.pw/mahdi.gpg" -O
+curl -Ls "https://mirzadeh.pro/mahdi.gpg" -O
 gpg --import mahdi.gpg
 ```
 
