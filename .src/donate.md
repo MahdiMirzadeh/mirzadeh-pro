@@ -22,22 +22,14 @@ Moral support is also an important way of giving support to us, You can always s
 
 Any money raised will be used to cover hosting costs, any hardware procurement and possibly travel expenses.
 
-### Bitcoin
+### Crypto
 
-Click or scan to QR code below to launch your Bitcoin client and donate an amount of your choice. Alternatively, copy and paste the Bitcoin address into your Bitcoin client.
+Click or scan to QR code below to donate an amount of your choice. Alternatively, copy and paste each token's address into your wallet application.
 
-[![Bitcoin QR Code](https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=bitcoin:1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc)](bitcoin:1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc)
-
-```
-1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc
-```
-
-Also appreciating:
-
-- **LbryCredit**: `bXFbDZGzA6uCUQzGzedsvk8jeCqkyBi9bM`
-- **Etherium:** `0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955`
-- **Litecoin:** `LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi`
-- **Zcash:** `t1NRoc1a6nXxZT1c1dDCUaMTGGRcpfCBcXy`
+| BTC | ETH | LTC |
+| --- | --- | --- |
+| [![Bitcoin QR Code](https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=bitcoin:1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc)](bitcoin:1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc) | [![Etherium QR Code](https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=ethereum:0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955)](ethereum:0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955) | [![Litecoin QR Code](https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=litecoin:LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi)](litecoin:LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi) |
+| `1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc` | `0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955` | `LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi` |
 
 ### Iranian Account
 
