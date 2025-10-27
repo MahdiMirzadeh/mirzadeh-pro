@@ -16,7 +16,7 @@ Your code contributions, stars, forks, shares, bug reports, issues, and many mor
 
 ### With Words
 
-Moral support is also an important way of giving support to us, You can always send some kind words into [me@mahdi.pw](mailto:me@mahdi.pw) or any other members' Emails.
+Moral support is also an important way of giving support to us, You can always send some kind words into [mahdi@mirzadeh.pro](mailto:mahdi@mirzadeh.pro) or any other members' Emails.
 
 ## Financial Support
 

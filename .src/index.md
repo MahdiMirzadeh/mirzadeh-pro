@@ -15,7 +15,7 @@ I'm interested in FOSS (Free Open Source Software) and have been using GNU+Linux
 - [About](/about.html)
 - [Donate](/donate.html)
 - [Contact](/contact.html)
-- [Git Server](https://git.mahdi.pw/)
+- [Git Server](https://git.mirzadeh.pro/)
 
 ## GNU+Linux is not just an OS, It's a journey
 
@@ -47,7 +47,7 @@ But as I became more elite (because I used ArchLinux), My desktop environment (x
 
 - 2021:
 
-I became more interested in [suckless philosophy](http://suckless.org/philosophy/) and avoided bloated software, made my own builds of dwm, st, tabbed, surf, dmenu, slock, oksh, neatvi ... and completely moved to cli/tui applications [(check my dotfiles)](https://git.mahdi.pw/dotfiles). Also:
+I became more interested in [suckless philosophy](http://suckless.org/philosophy/) and avoided bloated software, made my own builds of dwm, st, tabbed, surf, dmenu, slock, oksh, neatvi ... and completely moved to cli/tui applications [(check my dotfiles)](https://git.mirzadeh.pro/dotfiles). Also:
 
 ArchLinux -> AlpineLinux -> FreeBSD | OpenBSD (2022)
 
