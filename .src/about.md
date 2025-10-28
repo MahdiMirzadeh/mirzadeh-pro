@@ -17,7 +17,7 @@ Hi, I'm Mahdi Mirzadeh. I was born in Fall 2003 and live in Iran. I love compute
 ## What I build
 
 - Small, fast tools and websites with minimal dependencies
-- This website is built with Kaveh, a pure POSIX shell static site generator
+- This website is built with [Kaveh](https://github.com/MahdiMirzadeh/Kaveh), a pure POSIX shell static site generator
 
 ## This website
 
