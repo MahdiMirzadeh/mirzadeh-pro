@@ -11,9 +11,12 @@ Features
 - Footnotes with auto-linking
 - Syntax-highlighted code blocks
 - Tables, lists, and task lists
+- Per-directory headers and footers with hierarchical overrides
 - Built-in responsive dark mode
 - Minified CSS output
 - SEO-friendly semantic HTML
+- RSS feed generation from .rss files
+- Automatic sitemap.xml generation
 
 Requirements
 ------------
@@ -31,11 +34,18 @@ Usage
 -----
     kaveh
     kaveh -i [INPUT] -o [OUTPUT]
+    kaveh -i [INPUT] -o [OUTPUT] -s [BASE_URL]
     kaveh -v
 
 If you don't specify directories, these are the defaults:
      [INPUT]  == $PWD/.src
     [OUTPUT]  == $PWD
+
+Options:
+    -i INPUT       Source directory or file (default: ./.src)
+    -o OUTPUT      Output directory (default: ./)
+    -s BASE_URL    Enable sitemap generation with base URL (e.g., https://example.com)
+    -v             Show version information
 
 Markdown Metadata
 -----------------
@@ -48,6 +58,360 @@ Add metadata at the top of your .md files using HTML comments:
     --->
 
 All fields are optional and will use defaults if not specified.
+
+List Pagination
+---------------
+Automatically generate paginated lists of files using a clean YAML-like syntax:
+
+    <!---list
+    pattern: blog/*.md
+    per_page: 10
+    --->
+
+This creates a list of all files matching `blog/*.md`, showing 10 posts per page.
+
+Syntax:
+
+    <!---list
+    pattern: <glob_pattern>
+    per_page: <number>          (optional, default: unlimited)
+    custom_dir: <dirname>       (optional, default: based on filename)
+    icon: <auto|true|false>     (optional, default: auto)
+    date: <auto|true|false>     (optional, default: auto)
+    display_next: <text>        (optional, default: "Next →")
+    display_prev: <text>        (optional, default: "← Previous")
+    --->
+
+Parameters:
+
+  pattern        Shell-style glob pattern to match files (required)
+  per_page       Number of items per page. Omit for unlimited (no pagination)
+  custom_dir     Custom directory name for pagination files
+  
+  icon           Control icon display:
+                 - auto (default): Show icons for non-markdown files only
+                 - true: Show icons for all files
+                 - false: Hide icons for all files
+  
+  date           Control date/time display:
+                 - auto (default): Show date for non-markdown files only
+                 - true: Show date for all files (including markdown)
+                 - false: Hide date for all files
+  
+  display_next   Custom text for "Next" pagination button
+  display_prev   Custom text for "Previous" pagination button
+
+Examples:
+
+Basic list (no pagination):
+
+    <!---list
+    pattern: blog/*.md
+    --->
+
+Paginated list:
+
+    <!---list
+    pattern: blog/*.md
+    per_page: 5
+    --->
+
+Custom pagination directory:
+
+    <!---list
+    pattern: blog/*.md
+    per_page: 10
+    custom_dir: posts
+    --->
+
+Hide icons and dates for all files:
+
+    <!---list
+    pattern: downloads/*.pdf
+    per_page: 10
+    icon: false
+    date: false
+    --->
+
+Show icons and dates for all files (including markdown):
+
+    <!---list
+    pattern: blog/*.md
+    per_page: 5
+    icon: true
+    date: true
+    --->
+
+Custom pagination button text:
+
+    <!---list
+    pattern: blog/*.md
+    per_page: 5
+    display_next: "Older posts"
+    display_prev: "Newer posts"
+    --->
+
+Glob patterns:
+
+    <!---list
+    pattern: blog/2023-*.md
+    per_page: 5
+    --->
+    Matches files from 2023
+
+    <!---list
+    pattern: **/draft-*.md
+    per_page: 5
+    --->
+    Matches draft files in any subdirectory
+
+Non-markdown files:
+
+    <!---list
+    pattern: downloads/*.pdf
+    per_page: 10
+    --->
+    Lists PDF documents with sizes and dates
+
+Multiple Lists:
+
+You can have multiple lists in the same file. Each list gets its own ID.
+In your markdown file:
+
+    # My Blog
+    
+    ## Latest Posts
+    <!---list
+    pattern: blog/*.md
+    per_page: 2
+    --->
+    
+    ## Tutorial Archive
+    <!---list
+    pattern: tutorials/*.md
+    per_page: 5
+    --->
+
+Pagination files are generated in dedicated directories:
+  Source:       blog-example.md
+  Output:       blog-example.html (main page)
+  Pagination:   blog-example/1_2.html, blog-example/2_1.html, etc.
+
+Custom directory names per list:
+
+    <!---list
+    pattern: blog/*.md
+    per_page: 5
+    custom_dir: posts
+    --->
+    
+  Output: posts/1_2.html, posts/2_1.html, etc.
+
+Each list can have its own custom directory:
+
+    ## Latest Posts
+    <!---list
+    pattern: blog/*.md
+    per_page: 5
+    custom_dir: posts
+    --->
+    
+    ## Tutorials  
+    <!---list
+    pattern: tutorials/*.md
+    per_page: 10
+    custom_dir: guides
+    --->
+
+This generates:
+  posts/1_1.html, posts/1_2.html (for blog posts)
+  guides/2_1.html, guides/2_2.html (for tutorials)
+
+Pagination filename format: {list_number}_{page_number}.html
+  List 1, Page 2: 1_2.html
+  List 2, Page 3: 2_3.html
+
+File Types:
+
+Lists work with any file type, not just markdown.
+
+Markdown files (.md):
+  - Title: From metadata or generated from filename
+  - Description: From metadata
+  - Date: Extracted from filename (YYYY-MM-DD pattern)
+  - URL: Converts .md to .html
+
+Other files (.pdf, .jpg, .zip, .gpg, etc.):
+  - Title: Actual filename (with extension)
+  - Description: File size with minimal file type icon
+  - Date: Last modified time (shown in <time> element)
+  - URL: Direct link to the file
+
+Non-markdown file listings show:
+  - Minimal SVG icon representing file type (document, image, video, archive, etc.)
+  - Human-readable file size with exact byte count (e.g., "2.3 MB (2,415,919 bytes)")
+  - Last modified timestamp in <time> element
+
+Examples:
+
+    <!---list
+    pattern: downloads/*.pdf
+    per_page: 10
+    --->
+    Lists PDF documents with sizes and dates
+
+    <!---list
+    pattern: gallery/**/*.jpg
+    per_page: 20
+    --->
+    Lists images from all subdirectories
+
+    <!---list
+    pattern: media/*.mp4
+    per_page: 8
+    --->
+    Lists video files with metadata
+
+    <!---list
+    pattern: keys/*.gpg
+    per_page: 5
+    --->
+    Lists GPG keys with file information
+
+Sitemap Generation
+------------------
+Kaveh can automatically generate a sitemap.xml file containing all HTML pages in your site.
+
+Enable sitemap generation by providing your site's base URL:
+
+    kaveh -i src -o out -s https://example.com
+
+This will:
+- Scan all .html files in the output directory
+- Generate a complete sitemap.xml in the root of your output
+- Include last modification dates for each page
+- Use proper XML escaping and formatting
+
+To disable sitemap generation:
+
+    kaveh -i src -o out -s 0
+
+Or simply omit the -s flag (disabled by default).
+
+You can also set the default base URL in the script:
+
+    KVH_SITEMAP="https://mysite.com"
+
+The sitemap follows the standard sitemap.org protocol and is ready for submission to
+search engines like Google, Bing, and others.
+
+RSS Feeds
+---------
+Automatically generate RSS feeds from markdown files using `.rss` files with a YAML-like syntax.
+
+Workflow:
+- Create a `.rss` file in your source directory (e.g., `.src/feed.rss`)
+- During build, it's processed and outputs as `.xml` (e.g., `feed.xml`)
+- The `.rss` file itself is not copied to output
+
+Syntax:
+
+    <!---rss
+    pattern: blog/*.md
+    feed_title: My Blog
+    feed_description: Latest blog posts
+    feed_url: https://example.com
+    limit: 20
+    --->
+
+Parameters:
+
+  pattern              Shell-style glob pattern to match files (required)
+  feed_title           Title of the RSS feed (optional, default: page name)
+  feed_description     Description of the feed (optional, default: page description)
+  feed_url             Base URL for links in the feed (optional, default: https://example.com)
+  limit                Maximum number of items in feed (optional, default: 20)
+
+Features:
+
+- Extracts dates from filenames (YYYY-MM-DD pattern) or file modification time
+- Uses markdown metadata (title, description) from files
+- Generates valid RSS 2.0 XML with proper XML escaping
+- Converts dates to RFC 822 format (required by RSS)
+- Supports multiple RSS feeds in the same project
+
+Example Basic Feed:
+
+    <!---rss
+    pattern: blog/*.md
+    feed_title: My Blog
+    feed_url: https://mysite.com
+    --->
+
+This generates `feed.xml` with all markdown files matching `blog/*.md` pattern.
+
+Multiple Feeds:
+
+You can create multiple `.rss` files for different content:
+
+    .src/
+    ├── feed.rss          # Main blog feed
+    ├── tutorials.rss     # Tutorial feed
+    ├── blog/
+    │   ├── 2025-01-15-post1.md
+    │   └── 2025-01-10-post2.md
+    └── tutorials/
+        ├── 2025-01-20-guide.md
+        └── 2025-01-05-intro.md
+
+With `feed.rss`:
+
+    <!---rss
+    pattern: blog/*.md
+    feed_title: Blog Posts
+    feed_url: https://example.com
+    limit: 10
+    --->
+
+And `tutorials.rss`:
+
+    <!---rss
+    pattern: tutorials/*.md
+    feed_title: Tutorials
+    feed_url: https://example.com
+    limit: 15
+    --->
+
+Output:
+
+    out/
+    ├── feed.xml          # Blog feed
+    ├── tutorials.xml     # Tutorials feed
+    ├── index.html
+    └── ...
+
+Metadata Example:
+
+Blog post file `2025-01-15-my-post.md`:
+
+    <!---
+    title: My Amazing Post
+    description: A brief summary of this post
+    --->
+
+    # My Amazing Post
+    
+    Post content here...
+
+In the RSS feed, this produces:
+
+    <item>
+        <title>My Amazing Post</title>
+        <link>https://example.com/blog/my-post.html</link>
+        <description>A brief summary of this post</description>
+        <pubDate>Mon, 15 Jan 2025 00:00:00 +0000</pubDate>
+        <guid>https://example.com/blog/my-post.html</guid>
+    </item>
 
 Custom Heading IDs
 ------------------
@@ -96,6 +460,87 @@ Recommended project layout:
         └── images/
 
 Non-markdown files (images, CSS, etc.) are automatically copied to output.
+
+Headers and Footers
+-------------------
+You can define per-directory headers and footers using Markdown files named `_header.md` and `_footer.md`.
+Their HTML will be injected into the page inside semantic `<header>` and `<footer>` tags.
+
+- Place `_header.md` and/or `_footer.md` in any directory under the source (default: `.src`).
+- For each page, Kaveh picks the nearest ancestor `_header.md` and `_footer.md`.
+  - A subdirectory’s file overrides the parent’s.
+  - Header and footer are resolved independently; you can override one without the other.
+- These files are not turned into pages and are ignored by lists and output copying.
+- Full Markdown is supported (tables, lists, images, code, etc.).
+
+Example:
+
+    .src/
+      _header.md                # applies to everything under .src/ unless overridden
+      a/
+        _footer.md              # overrides footer for a/ and below
+        b/
+          c/
+            _header.md          # overrides header for c/ and below
+          page.md               # header from .src/_header.md, footer from a/_footer.md
+
+Single-file mode:
+- When running `kaveh -i path/to/file.md -o out/file.html`, Kaveh also applies header/footer
+  from the file’s directory (and its parents) using the same rules.
+
+Performance:
+- Resolution is computed in one pass across directories with caching; overhead is negligible
+  compared to Markdown conversion.
+
+Conflict Resolution
+-------------------
+Kaveh automatically avoids naming conflicts between generated and source files.
+
+File Conflicts:
+
+If a source file has the same name as a generated HTML file:
+
+    .src/index.html    (your file)
+    .src/index.md      (generates index_.html instead)
+
+Output:
+
+    out/index.html     (copied from source)
+    out/index_.html    (generated from index.md)
+
+If index_.html also exists in source, it becomes index_2.html, and so on.
+
+Directory Conflicts:
+
+Pagination directories follow the same pattern:
+
+    .src/blog-example.md        (list file)
+    .src/blog-example/          (your directory)
+
+Output:
+
+    out/blog-example.html       (main page)
+    out/blog-example/           (your directory, copied)
+    out/blog-example_/          (pagination directory)
+
+If blog-example_/ also conflicts, it becomes blog-example_2/, etc.
+
+With custom directory names:
+
+    <!---list
+    pattern: blog/*.md
+    per_page: 5
+    custom_dir: posts
+    --->
+
+Source:
+    .src/posts/                 (your directory)
+
+Output:
+    out/posts/                  (your directory, copied)
+    out/posts_/                 (pagination directory)
+
+This ensures your source files are never overwritten or skipped.
 
 Automation Examples
 -------------------

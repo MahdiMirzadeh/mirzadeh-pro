@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Kaveh v0.2" />
+<meta name="description" content="How and why I built my own static site generator in 150 lines of shell script (September 2022).">
+<link rel="icon" href="/favicon.png">
+<title>Kaveh: A Static Site Generator in Pure POSIX Shell</title>
+<style>
+html{overflow-y:scroll;}body{background-color:#fafafa;color:#333;margin:0 auto;padding:1ex;max-width:80ex;font-family:sans-serif;line-height:1.6;}img{display:block;margin:0 auto;max-width:100%;height:auto;}.code-block{background-color:#f5f5f5;border:1px solid #d0d0d0;border-radius:4px;margin:1em 0;overflow:hidden;}.code-block pre{margin:0;padding:1em;overflow-x:auto;}.code-block code,pre{font-family:monospace;background-color:#f0f0f0;border:1px solid #ccc;border-radius:6px;padding:1em;margin:1em 0;font-size:1em;line-height:1.5;color:#222;white-space:pre-wrap;word-wrap:break-word;overflow-x:visible;}p code,li code,td code,blockquote code{display:inline;padding:2px 4px;border:1px solid #d0d0d0;background-color:#e8e8e8;border-radius:3px;}h1,h2,h3,h4,h5,h6,h7{line-height:1.2;margin-top:1.5em;margin-bottom:0.5em;}.heading-with-anchor{position:relative;}.heading-anchor{position:absolute;left:-1.5em;top:50%;transform:translateY(-50%);text-decoration:none;opacity:0;padding-right:0.5em;transition:opacity 0.2s ease;display:inline-flex;align-items:center;}.heading-anchor .octicon{fill:#ccc;display:block;}.heading-with-anchor:hover .heading-anchor{opacity:1;}.heading-anchor:hover .octicon{fill:#0066cc;}table{border-collapse:collapse;width:100%;margin:1em 0;table-layout:fixed;}table td,table th{border:1px solid #ccc;padding:8px 12px;text-align:left;vertical-align:top;}table tr:nth-child(even){background-color:#f9f9f9;}table td code,table th code{overflow-wrap:anywhere;word-break:break-all;white-space:normal;}blockquote{border-left:4px solid #d0d0d0;margin:1em 0;padding-left:1em;color:#555;}hr{border:none;border-top:2px solid #ccc;margin:2em 0;}ul.task-list{list-style:none;padding-left:0;}ul.task-list li.task-list-item{padding-left:1.5em;}ul.task-list input[type="checkbox"]{margin-left:-1.5em;margin-right:0.5em;}mark{background-color:#ffff00;padding:2px 0;}del{text-decoration:line-through;opacity:0.7;}sub,sup{font-size:0.75em;line-height:0;position:relative;vertical-align:baseline;}sup{top:-0.5em;}sub{bottom:-0.25em;}.footnotes{margin-top:2em;padding-top:1em;border-top:1px solid #ccc;font-size:0.9em;}.footnotes ol{padding-left:1.5em;}dl{margin:1em 0;}dt{font-weight:bold;margin-top:0.5em;}dd{margin-left:2em;margin-bottom:0.5em;}a{color:#0066cc;text-decoration:none;}a:hover{text-decoration:underline;color:#0052a3;}a:visited{color:#6b46c1;}ul ul,ol ol,ul ol,ol ul{margin:0.5em 0;}textarea,input,button{font-family:inherit;font-size:1em;border:1px solid #d0d0d0;border-radius:4px;padding:0.5em;}textarea,input[type="text"],input[type="password"],input[type="email"]{width:100%;background-color:#fff;color:#333;box-sizing:border-box;margin:0.5em 0;}textarea{resize:vertical;min-height:4em;}button{background-color:#0066cc;color:#fff;border:none;cursor:pointer;padding:0.6em 1.2em;margin:0.5em 0.5em 0.5em 0;transition:background-color 0.2s ease;}button:hover{background-color:#0052a3;}button:active{background-color:#003d7a;}.post-list{margin:2em 0;padding:1.5em;background-color:#f9f9f9;border:1px solid #e5e5e5;border-radius:6px;}.post-entry{margin-bottom:2em;padding-bottom:1.5em;border-bottom:1px solid #e0e0e0;}.post-entry:last-of-type{border-bottom:none;}.post-entry h3{margin-top:0;margin-bottom:0.5em;}.post-entry h3 a{color:#333;}.post-entry h3 a:hover{color:#0066cc;}.post-entry time{display:block;color:#666;font-size:0.9em;margin-bottom:0.5em;}.post-entry p{margin:0.5em 0 0 0;color:#555;}.post-entry .file-icon{display:inline-block;vertical-align:middle;margin-right:0.25em;fill:#666;}.pagination{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin:2em 0 0 0;padding:1em 0 0 0;border-top:2px solid #d0d0d0;}.pagination .prev{grid-column:1;justify-self:start;}.pagination .page-info{grid-column:2;text-align:center;color:#666;font-size:0.9em;}.pagination .next{grid-column:3;justify-self:end;}.pagination a{padding:0.5em 1em;background-color:#0066cc;color:#fff;border-radius:4px;text-decoration:none;}.pagination a:hover{background-color:#0052a3;}@media print{body{max-width:none;}}@media (prefers-color-scheme:dark){body{color:#e0e0e0;background-color:#1a1a1a;}.code-block{background-color:#0d0d0d;border-color:#333;}.code-block pre{color:#e0e0e0;}pre{background-color:#1e1e1e;border-color:#333;color:#f2f2f2;white-space:pre-wrap;word-wrap:break-word;overflow-x:visible;}p code,li code,td code,blockquote code{background-color:#0d0d0d;border-color:#333;color:#e0e0e0;}table td,table th{border-color:#444;}table tr:nth-child(even){background-color:#111;}blockquote{border-left-color:#444;color:#aaa;}hr{border-top-color:#444;}mark{background-color:#666600;color:#fff;}a:link{color:#cdf;}a:hover,a:visited:hover{color:#def;}a:visited{color:#dcf;}.footnotes{border-top-color:#444;}.heading-anchor .octicon{fill:#555;}.heading-anchor:hover .octicon{fill:#cdf;}textarea,input[type="text"],input[type="password"],input[type="email"]{background-color:#0d0d0d;color:#e0e0e0;border-color:#444;}button{background-color:#0066cc;}button:hover{background-color:#3388dd;}button:active{background-color:#0052a3;}.post-list{background-color:#0d0d0d;border-color:#333;}.post-entry{border-bottom-color:#333;}.post-entry h3 a{color:#e0e0e0;}.post-entry h3 a:hover{color:#cdf;}.post-entry time{color:#999;}.post-entry p{color:#aaa;}.pagination{border-top-color:#444;}.pagination a{background-color:#0066cc;}.pagination a:hover{background-color:#3388dd;}.pagination .page-info{color:#999;}.post-entry .file-icon{fill:#999;}}
+</style>
+</head>
+<body>
+<div>
+<header><h1 id="home" class="heading-with-anchor"><a href="/"><- Home</a><a href="#home" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h1></header>
+<p>In my <a href="/blog/2022-05-10-why-i-love-static-site-generators.html">earlier post on static sites</a>, I mentioned I use a custom POSIX shell script to build this website. This is that script. It's called <a href="https://github.com/mahdimirzadeh/kaveh">Kaveh</a>, and as of right now it's about 150 lines of shell that converts Markdown to HTML.</p>
+<h2 id="why-build-another-static-site-generator" class="heading-with-anchor">Why build another static site generator?<a href="#why-build-another-static-site-generator" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<p>Because I wanted something I fully understand. No 500-package dependency tree, no framework magic, no "it works but I don't know how." Just a shell script I can read, modify, and trust.
+</p>
+<p>Goals:</p>
+<ul>
+<li>Pure POSIX shell (portable, no runtime dependencies)
+</li>
+<li>Minimal: one script, no plugins, no config files
+</li>
+<li>Fast: process files in parallel using <code>find</code> and pipes
+</li>
+<li>Simple: Markdown goes in, HTML comes out
+</li></ul>
+<h2 id="how-kaveh-works-v0-1" class="heading-with-anchor">How Kaveh works (v0.1)<a href="#how-kaveh-works-v0-1" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<p>The entire generator is one shell script with an embedded HTML template. Here's the flow:</p>
+<div class="code-block"><pre>
+src/*.md  --&gt;  [parse metadata]  --&gt;  [convert to HTML]  --&gt;  out/*.html
+                                           |
+                                      [apply template]
+</pre></div>
+<h3 id="1-parse-metadata" class="heading-with-anchor">1. Parse metadata<a href="#1-parse-metadata" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h3>
+<p>Markdown files can include metadata in HTML comments:</p>
+<div class="code-block" data-lang="markdown"><pre>
+
+# Page content starts here
+</pre></div>
+<p>The script extracts these with <code>sed</code>:</p>
+<div class="code-block" data-lang="sh"><pre>
+getvalue() { 
+    sed -e &quot;/.*&lt;\!---.*KVH.*/,/---&gt;/!d&quot; &quot;$1&quot; \
+    | sed -n &quot;/^$2/I p&quot; \
+    | sed 's/^.*: //'; 
+}
+</pre></div>
+<p>Simple pattern matching. No YAML parser needed.
+</p>
+<h3 id="2-convert-markdown-to-html" class="heading-with-anchor">2. Convert Markdown to HTML<a href="#2-convert-markdown-to-html" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h3>
+<p>I use an external Markdown parser (discount's <code>markdown</code> command). The script just calls it:</p>
+<div class="code-block" data-lang="sh"><pre>
+md2html() { 
+    markdown &quot;$1&quot; | sed -e '/.*&lt;\!---.*KVH.*/,/---&gt;/d'; 
+}
+</pre></div>
+<p>The <code>sed</code> removes the metadata comment from the output.
+</p>
+<p><strong>Why an external parser?</strong>  
+Writing a full Markdown parser in shell would be hundreds of lines and slow. The <code>markdown</code> command is fast, widely available (discount package on most distros), and does one thing well. That's the Unix way.</p>
+<h3 id="3-apply-the-template" class="heading-with-anchor">3. Apply the template<a href="#3-apply-the-template" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h3>
+<p>The HTML template is embedded at the end of the script after a <code>__HTML TEMPLATE__</code> marker. The generator extracts it, injects the converted Markdown, substitutes variables, and writes the output:</p>
+<div class="code-block" data-lang="sh"><pre>
+printf &quot;%s\n&quot; \
+    &quot;$(sed '0,/^__HTML TEMPLATE__$/d' &quot;$0&quot; | sed -e '/PAGE_DATA/,//d')&quot; \
+    &quot;$(md2html &quot;${FILE}&quot;)&quot; \
+    &quot;$(sed '0,/^__HTML TEMPLATE__$/d' &quot;$0&quot; | sed -e '0,/%PAGE_DATA%/d')&quot; \
+| sed -e &quot;s/Kaveh: A Static Site Generator in Pure POSIX Shell/${PAGE_NAME}/g&quot; \
+      -e &quot;s/How and why I built my own static site generator in 150 lines of shell script (September 2022)./${PAGE_DESC}/g&quot; \
+      -e &quot;s//favicon.png/${PAGE_ICON}/g&quot; \
+&gt; &quot;${OUTPUT_FILE}&quot;
+</pre></div>
+<p>Variables like <code>Kaveh: A Static Site Generator in Pure POSIX Shell</code> are replaced with metadata from the Markdown file or defaults.
+</p>
+<h3 id="4-copy-assets" class="heading-with-anchor">4. Copy assets<a href="#4-copy-assets" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h3>
+<p>Non-Markdown files (images, CSS, etc.) are copied as-is:</p>
+<div class="code-block" data-lang="sh"><pre>
+find &quot;${KVH_SRC}&quot; -type f | while read FILE; do
+    [ &quot;${FILE#*.}&quot; = &quot;md&quot; ] || continue  # Skip .md files
+    # ... copy to output ...
+done
+</pre></div>
+<p>That's it. The entire build process.
+</p>
+<h2 id="the-template" class="heading-with-anchor">The template<a href="#the-template" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<p>The embedded template is minimal: semantic HTML5, a small CSS block (light/dark mode via media query), no JavaScript. It fits in ~80 lines.</p>
+<p>Key features:</p>
+<ul>
+<li>Responsive: works on any screen size
+</li>
+<li>Dark mode: respects <code>prefers-color-scheme</code>
+</li>
+<li>Print-friendly: removes unnecessary styling for print
+</li>
+<li>View-source friendly: clean, readable HTML
+</li></ul>
+<p>No frameworks, no build step for the CSS, no bloat.
+</p>
+<h2 id="usage" class="heading-with-anchor">Usage<a href="#usage" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<div class="code-block" data-lang="sh"><pre>
+kaveh -i src/ -o out/
+</pre></div>
+<p>Defaults to <code>$PWD/src</code> and <code>$PWD/out</code> if you don't specify.
+</p>
+<p>Run it once, deploy the <code>out/</code> directory. No server-side rendering, no runtime, no database.
+</p>
+<h2 id="limitations-as-of-v0-1" class="heading-with-anchor">Limitations (as of v0.1)<a href="#limitations-as-of-v0-1" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<ul>
+<li>Requires an external Markdown parser (discount's <code>markdown</code> command)
+</li>
+<li>No built-in pagination or blog index generation
+</li>
+<li>No automatic sitemap or RSS feed
+</li>
+<li>Template is embedded, not a separate file
+</li></ul>
+<p>These are acceptable trade-offs for a ~150-line script. If I need more features, I'll add them. If I don't, the script stays simple.
+</p>
+<h2 id="performance" class="heading-with-anchor">Performance<a href="#performance" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<p>On my laptop, Kaveh builds this site (a few pages) in under a second. For larger sites, the bottleneck is the Markdown parser, not the shell script.
+</p>
+<p>Want faster builds? Run in parallel:</p>
+<div class="code-block" data-lang="sh"><pre>
+find src/ -name &quot;*.md&quot; | xargs -P 4 -I {} sh -c 'kaveh -i {} -o out/'
+</pre></div>
+<p>Shell is great for orchestration like this.
+</p>
+<h2 id="philosophy" class="heading-with-anchor">Philosophy<a href="#philosophy" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<p>Kaveh follows the suckless philosophy:</p>
+<ul>
+<li>Simplicity over features
+</li>
+<li>Clarity over abstraction
+</li>
+<li>Minimal dependencies
+</li></ul>
+<p>The entire script is readable in one sitting. You can understand how it works, modify it, and trust it. That's more valuable than a feature-rich generator with thousands of lines you'll never read.
+</p>
+<h2 id="source" class="heading-with-anchor">Source<a href="#source" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<p>The code is on GitHub: <a href="https://github.com/mahdimirzadeh/kaveh">MahdiMirzadeh/kaveh</a></p>
+<p>It's MIT licensed. Use it, fork it, modify it. If you find bugs or have ideas, open an issue.
+</p>
+<h2 id="conclusion" class="heading-with-anchor">Conclusion<a href="#conclusion" class="heading-anchor" aria-label="Permalink"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a></h2>
+<p>Static site generators don't need to be complex. Markdown to HTML is a solved problem. You don't need a framework or a runtime to build a website.
+</p>
+<p>A shell script, a Markdown parser, and a template. That's it for now.</p>
+<footer><table>
+<tr><td><p style="text-align: center;"><a href="https://github.com/MahdiMirzadeh">Github</a><p></td><td><p style="text-align: center;"><a href="https://x.com/MahdiMirzade">X / Twitter</a><p></td><td><p style="text-align: center;"><a href="https://t.me/MahdiMirzade">Telegram</a><p></td><td><p style="text-align: center;"><a href="https://www.youtube.com/@MahdiMirzade">Youtube</a><p></td><td><p style="text-align: center;"><a href="/blog.xml">RSS</a><p></td></tr>
+</table>
+<p style="text-align: center"><small>Generated by <a href="https://github.com/MahdiMirzadeh/Kaveh">Kaveh</a></small></p></footer>
+</div>
+</body>
+</html>

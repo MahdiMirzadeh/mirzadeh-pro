@@ -1,0 +1,7 @@
+<!---rss
+pattern: blog/*.md
+feed_title: Mahdi Mirzadeh's Blog
+feed_description: Latest articles
+feed_url: https://mirzadeh.pro
+limit: 50
+---->
