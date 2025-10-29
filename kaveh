@@ -1991,7 +1991,7 @@ __HTML TEMPLATE__
         color: #333;
         margin: 0 auto;
         padding: 1ex;
-        max-width: 80ex;
+        max-width: 100ex;
         font-family: sans-serif;
         line-height: 1.6;
     }
