@@ -28,7 +28,7 @@ Click or scan to QR code below to donate an amount of your choice. Alternatively
 
 | BTC | ETH | LTC |
 | --- | --- | --- |
-| [![Bitcoin QR Code](https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=bitcoin:1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc)](bitcoin:1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc) | [![Etherium QR Code](https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=ethereum:0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955)](ethereum:0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955) | [![Litecoin QR Code](https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=litecoin:LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi)](litecoin:LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi) |
+| [![Bitcoin QR Code](/donate-btc.png)](bitcoin:1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc) | [![Etherium QR Code](/donate-eth.png)](ethereum:0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955) | [![Litecoin QR Code](/donate-ltc.png)](litecoin:LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi) |
 | `1H5YUVVif9u9JNBVaboCwsBvHAoDeAW5yc` | `0x05A11A118eb3BDbD015c2fdd3F843dBe422C2955` | `LiZRqXUrQYjs8TapBEpEngiSiZMvViaPhi` |
 
 ### Iranian Account
