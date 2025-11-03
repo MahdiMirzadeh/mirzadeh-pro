@@ -2,6 +2,7 @@
   "name": "mirzadeh-pro",
   "compatibility_date": "2025-08-23",
   "workers_dev": false,
+  "main": "./.worker.js",
   "assets": {
     "directory": "./"
   },
